@@ -3,7 +3,7 @@ Practical Machine Learning Project Work - Weigh Lifting Dataset
 
 # Backgroud
 
-
+Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement – a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: http://groupware.les.inf.puc-rio.br/har (see the section on the Weight Lifting Exercise Dataset). 
 
 ## Environment
 
@@ -15,6 +15,7 @@ require(dplyr)
 require(caret)
 library(e1071)
 library(adabag)
+library(randomForest)
 set.seed(1314)
 ```
 
@@ -71,7 +72,14 @@ a=svm(classe~.,data=training,kernal="sigmoid")
 z0=table(training[,53],predict(a,training))
 z0
 ```
-The accuracy of the model (out ot sample) is 94.95%
+```{r}
+
+test_preds <- predict(a,newdata=testing)
+confusionMatrix(test_preds,testing$classe)
+```
+
+The accuracy of the model (out ot sample) is  0.9392.  
+
 ## Prediction with randomForest
 .
 
@@ -80,12 +88,19 @@ b=randomForest(classe~.,data=training, method="class")
 z1=table(training[,53],predict(b,training))
 z1
 ```
- The accuracy of the model (out ot sample) is 100
- Therefore, we chose randomForest to predict test data.
 
+ 
+```{r}
+
+test_preds <- predict(b,newdata=testing)
+confusionMatrix(test_preds,testing$classe)
+```
+ The accuracy of the model (out ot sample) is 0.9935.  
 ```{r}
 real_preds <- predict(b, newdata=test_data_cleaned)
+
 ```
+Therefore, we chose randomForest to predict test data.
 
 And finally write them to a file with a function provided in the project.
 
